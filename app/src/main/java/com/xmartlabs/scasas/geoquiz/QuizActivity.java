@@ -9,45 +9,50 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
-    private Button mTrueButon;
-    private Button mFalseButton;
+  private Button falseButton;
+  private Button trueButon;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz);
-        mTrueButon = (Button) findViewById(R.id.true_button);
-        mTrueButon.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Toast.makeText(QuizActivity.this,
-                        R.string.incorrect_toast,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-        mFalseButton = (Button) findViewById(R.id.false_button);
-        mFalseButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Toast.makeText(QuizActivity.this,
-                        R.string.correct_toast,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_quiz);
+    setupQuizButton();
+  }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.quiz,menu);
-        return true;
-    }
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.quiz, menu);
+    return true;
+  }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings){
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+    if (id == R.id.action_settings) {
+      // TODO: 1/24/17
+      return true;
     }
+    return super.onOptionsItemSelected(item);
+  }
+
+  private void setupQuizButton() {
+    trueButon = (Button) findViewById(R.id.true_button);
+    trueButon.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Toast.makeText(QuizActivity.this,
+            R.string.incorrect_toast,
+            Toast.LENGTH_SHORT).show();
+      }
+    });
+    falseButton = (Button) findViewById(R.id.false_button);
+    falseButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Toast.makeText(QuizActivity.this,
+            R.string.correct_toast,
+            Toast.LENGTH_SHORT).show();
+      }
+    });
+  }
 }
