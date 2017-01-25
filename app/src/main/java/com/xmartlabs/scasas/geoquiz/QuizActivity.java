@@ -9,8 +9,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 /**
- * @author chaca <scasas@xmartlabs.com>
- * created: 17/01/2017
+ * Created by scasas on 17/01/2017
  */
 public class QuizActivity extends AppCompatActivity {
   private Button falseButton;
