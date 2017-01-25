@@ -1,4 +1,4 @@
-package com.xmartlabs.scasas.geoquiz;
+package com.xmartlabs.scasas.geoquiz.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.xmartlabs.scasas.geoquiz.R;
+
 /**
- * Created by scasas on 17/01/2017
+ * Created by scasas on 1/17/17
  */
+
 public class QuizActivity extends AppCompatActivity {
   private Button falseButton;
   private Button trueButon;
