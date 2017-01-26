@@ -1,13 +1,16 @@
 package com.xmartlabs.scasas.geoquiz.module;
 
+import android.support.annotation.StringRes;
+
 /**
  * Created by scasas on 1/25/17.
  */
-
 public class Question {
+  @StringRes
   private int textResId;
   private boolean answerTrue;
 
+  @StringRes
   public int getTextResId() {
     return textResId;
   }
@@ -20,16 +23,13 @@ public class Question {
     private int textResId;
     private boolean answerTrue;
 
-    public Builder() {
-    }
-
-    public Builder textResId(int val) {
-      textResId = val;
+    public Builder textResId(int textResId) {
+      this.textResId = textResId;
       return this;
     }
 
-    public Builder answerTrue(boolean val) {
-      answerTrue = val;
+    public Builder answerTrue(boolean answerTrue) {
+      this.answerTrue = answerTrue;
       return this;
     }
 
@@ -42,5 +42,4 @@ public class Question {
     textResId = builder.textResId;
     answerTrue = builder.answerTrue;
   }
-
 }
