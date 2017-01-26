@@ -1,6 +1,7 @@
 package com.xmartlabs.scasas.geoquiz.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -26,7 +27,8 @@ public class QuizActivity extends AppCompatActivity {
   private Button nextButton;
   private Button prevButton;
   private TextView questionTextView;
-  private List<Question> questionBank = new ArrayList<>();
+  @NonNull
+  private List<Question> questionList = new ArrayList<>();
   private int currentIndex = 0;
 
   @Override
@@ -34,7 +36,7 @@ public class QuizActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_quiz);
     setupQuizButton();
-    setupQuestion();
+    setupQuestionText();
   }
 
   @Override
@@ -69,15 +71,11 @@ public class QuizActivity extends AppCompatActivity {
       public void onClick(View v) {
         if (!isLastQuestion()) {
           currentIndex++;
-          questionTextView.setText(questionBank.get(currentIndex).getTextResId());
-          if (isLastQuestion()) {
-            nextButton.setEnabled(false);
-          }
-          if (!prevButton.isEnabled() && !isFirstQuestion()) {
-            prevButton.setEnabled(true);
-          }
+          questionTextView.setText(questionList.get(currentIndex).getTextResId());
+          nextButton.setEnabled(!isLastQuestion());
+          prevButton.setEnabled(!isFirstQuestion());
         } else {
-          Toast.makeText(QuizActivity.this, R.string.no_more, Toast.LENGTH_SHORT).show();
+          showToast(R.string.no_more);
         }
       }
     });
@@ -90,17 +88,10 @@ public class QuizActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         if (!isFirstQuestion()) {
-          if (!prevButton.isEnabled()) {
-            prevButton.setEnabled(true);
-          }
           currentIndex--;
-          questionTextView.setText(questionBank.get(currentIndex).getTextResId());
-          if (!nextButton.isEnabled() && !isLastQuestion()) {
-            nextButton.setEnabled(true);
-          }
-          if (isFirstQuestion()) {
-            prevButton.setEnabled(false);
-          }
+          questionTextView.setText(questionList.get(currentIndex).getTextResId());
+          nextButton.setEnabled(!isLastQuestion());
+          prevButton.setEnabled(!isFirstQuestion());
         }
       }
     });
@@ -112,17 +103,10 @@ public class QuizActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         if (!isLastQuestion()) {
-          if (!nextButton.isEnabled()) {
-            nextButton.setEnabled(true);
-          }
           currentIndex++;
-          questionTextView.setText(questionBank.get(currentIndex).getTextResId());
-          if (!prevButton.isEnabled() && !isFirstQuestion()) {
-            prevButton.setEnabled(true);
-          }
-          if (isLastQuestion()) {
-            nextButton.setEnabled(false);
-          }
+          questionTextView.setText(questionList.get(currentIndex).getTextResId());
+          prevButton.setEnabled(!isFirstQuestion());
+          nextButton.setEnabled(!isLastQuestion());
         }
       }
     });
@@ -133,7 +117,7 @@ public class QuizActivity extends AppCompatActivity {
     falseButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Toast.makeText(QuizActivity.this, obtainAnswerValue(falseButton.getText().toString()), Toast.LENGTH_SHORT).show();
+        showToast(obtainAnswerValue(falseButton.getText().toString()));
       }
     });
   }
@@ -143,73 +127,72 @@ public class QuizActivity extends AppCompatActivity {
     trueButon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Toast.makeText(QuizActivity.this, obtainAnswerValue(trueButon.getText().toString()), Toast.LENGTH_SHORT).show();
+        showToast(obtainAnswerValue(trueButon.getText().toString()));
       }
     });
   }
 
-  private void setupQuestion() {
+  private void setupQuestionText() {
     questionTextView = (TextView) findViewById(R.id.question);
-    int question = questionBank.get(currentIndex).getTextResId();
+    int question = questionList.get(currentIndex).getTextResId();
     questionTextView.setText(question);
   }
 
   @StringRes
-  private int obtainAnswerValue(String valueButton) {
-    return (valueButton.toLowerCase().equals(String.valueOf(questionBank.get(currentIndex).isAnswerTrue()))) ?
+  private int obtainAnswerValue(@NonNull String valueButton) {
+    return (valueButton.toLowerCase().equals(String.valueOf(questionList.get(currentIndex).isAnswerTrue()))) ?
         R.string.correct_toast :
         R.string.incorrect_toast;
   }
 
   private void addQuestion() {
-    int currentIndexAux = currentIndex;
-    this.questionBank.add(currentIndexAux,
+    int listIndex = 0;
+    this.questionList.add(listIndex,
         new Question.Builder()
             .textResId(R.string.question_oceans)
             .answerTrue(true)
             .build()
     );
-    currentIndexAux++;
-
-    this.questionBank.add(currentIndexAux,
+    listIndex++;
+    this.questionList.add(listIndex,
         new Question.Builder()
             .textResId(R.string.question_mideast)
             .answerTrue(false)
             .build()
     );
-    currentIndexAux++;
-
-    this.questionBank.add(currentIndexAux,
+    listIndex++;
+    this.questionList.add(listIndex,
         new Question.Builder()
             .textResId(R.string.question_africa)
             .answerTrue(false)
             .build()
     );
-    currentIndexAux++;
-
-    this.questionBank.add(currentIndexAux,
+    listIndex++;
+    this.questionList.add(listIndex,
         new Question.Builder()
             .textResId(R.string.question_americas)
             .answerTrue(true)
             .build()
     );
-    currentIndexAux++;
-
-    this.questionBank.add(currentIndexAux,
+    listIndex++;
+    this.questionList.add(listIndex,
         new Question.Builder()
             .textResId(R.string.question_asia)
             .answerTrue(true)
             .build()
     );
-    currentIndexAux++;
-
+    listIndex++;
   }
 
   private boolean isLastQuestion() {
-    return currentIndex == questionBank.size() - 1;
+    return currentIndex == questionList.size() - 1;
   }
 
   private boolean isFirstQuestion() {
     return currentIndex == 0;
+  }
+
+  private void showToast(@NonNull int msg){
+    Toast.makeText(QuizActivity.this, msg, Toast.LENGTH_SHORT).show();
   }
 }
