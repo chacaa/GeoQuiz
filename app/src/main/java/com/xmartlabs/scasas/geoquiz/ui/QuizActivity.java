@@ -57,7 +57,7 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupQuizButton() {
-    addQuestion();
+    setupQuestions();
     setupTrueButton();
     setupFalseButton();
     setupNextButton();
@@ -146,7 +146,7 @@ public class QuizActivity extends AppCompatActivity {
         R.string.incorrect_toast;
   }
 
-  private void addQuestion() {
+  private void setupQuestions() {
     int listIndex = 0;
     this.questionList.add(listIndex,
         new Question.Builder()
