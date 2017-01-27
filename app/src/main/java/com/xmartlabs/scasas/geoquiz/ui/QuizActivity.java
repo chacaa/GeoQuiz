@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,8 @@ import java.util.List;
  */
 
 public class QuizActivity extends AppCompatActivity {
+  private static final String TAG = "QuizActivity";
+  private static final String KEY_INDEX = "index";
   private Button falseButton;
   private Button trueButon;
   private ImageButton nextButton;
@@ -36,6 +39,9 @@ public class QuizActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_quiz);
+    if (savedInstanceState != null) {
+      currentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+    }
     setupQuizButton();
     setupQuestionText();
   }
@@ -84,7 +90,9 @@ public class QuizActivity extends AppCompatActivity {
 
   private void setupPrevButton() {
     prevButton = (ImageButton) findViewById(R.id.prev_button);
-    prevButton.setEnabled(false);
+    if (isFirstQuestion()) {
+      prevButton.setEnabled(false);
+    }
     prevButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -189,5 +197,12 @@ public class QuizActivity extends AppCompatActivity {
 
   private void showToast(@NonNull int msg) {
     Toast.makeText(QuizActivity.this, msg, Toast.LENGTH_SHORT).show();
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle savedInstanceState) {
+    super.onSaveInstanceState(savedInstanceState);
+    Log.i(TAG, "onSaveInstance");
+    savedInstanceState.putInt(KEY_INDEX, currentIndex);
   }
 }
