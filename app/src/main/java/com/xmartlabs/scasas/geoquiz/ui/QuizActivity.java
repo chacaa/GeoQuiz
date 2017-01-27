@@ -29,7 +29,7 @@ public class QuizActivity extends AppCompatActivity {
   private ImageButton prevButton;
   private TextView questionTextView;
   @NonNull
-  private List<Question> questionList = new ArrayList<>();
+  private List<Question> questions = new ArrayList<>();
   private int currentIndex = 0;
 
   @Override
@@ -72,7 +72,7 @@ public class QuizActivity extends AppCompatActivity {
       public void onClick(View v) {
         if (!isLastQuestion()) {
           currentIndex++;
-          questionTextView.setText(questionList.get(currentIndex).getTextResId());
+          questionTextView.setText(questions.get(currentIndex).getTextResId());
           nextButton.setEnabled(!isLastQuestion());
           prevButton.setEnabled(!isFirstQuestion());
         } else {
@@ -90,7 +90,7 @@ public class QuizActivity extends AppCompatActivity {
       public void onClick(View v) {
         if (!isFirstQuestion()) {
           currentIndex--;
-          questionTextView.setText(questionList.get(currentIndex).getTextResId());
+          questionTextView.setText(questions.get(currentIndex).getTextResId());
           nextButton.setEnabled(!isLastQuestion());
           prevButton.setEnabled(!isFirstQuestion());
         }
@@ -105,7 +105,7 @@ public class QuizActivity extends AppCompatActivity {
       public void onClick(View v) {
         if (!isLastQuestion()) {
           currentIndex++;
-          questionTextView.setText(questionList.get(currentIndex).getTextResId());
+          questionTextView.setText(questions.get(currentIndex).getTextResId());
           prevButton.setEnabled(!isFirstQuestion());
           nextButton.setEnabled(!isLastQuestion());
         }
@@ -135,65 +135,59 @@ public class QuizActivity extends AppCompatActivity {
 
   private void setupQuestionText() {
     questionTextView = (TextView) findViewById(R.id.question);
-    int question = questionList.get(currentIndex).getTextResId();
+    int question = questions.get(currentIndex).getTextResId();
     questionTextView.setText(question);
   }
 
   @StringRes
   private int obtainAnswerValue(@NonNull String valueButton) {
-    return (valueButton.toLowerCase().equals(String.valueOf(questionList.get(currentIndex).isAnswerTrue()))) ?
-        R.string.correct_toast :
-        R.string.incorrect_toast;
+    return valueButton.toLowerCase().equals(String.valueOf(questions.get(currentIndex).isAnswerTrue()))
+        ? R.string.correct_toast
+        : R.string.incorrect_toast;
   }
 
   private void setupQuestions() {
-    int listIndex = 0;
-    this.questionList.add(listIndex,
+    this.questions.add(
         new Question.Builder()
             .textResId(R.string.question_oceans)
             .answerTrue(true)
             .build()
     );
-    listIndex++;
-    this.questionList.add(listIndex,
+    this.questions.add(
         new Question.Builder()
             .textResId(R.string.question_mideast)
             .answerTrue(false)
             .build()
     );
-    listIndex++;
-    this.questionList.add(listIndex,
+    this.questions.add(
         new Question.Builder()
             .textResId(R.string.question_africa)
             .answerTrue(false)
             .build()
     );
-    listIndex++;
-    this.questionList.add(listIndex,
+    this.questions.add(
         new Question.Builder()
             .textResId(R.string.question_americas)
             .answerTrue(true)
             .build()
     );
-    listIndex++;
-    this.questionList.add(listIndex,
+    this.questions.add(
         new Question.Builder()
             .textResId(R.string.question_asia)
             .answerTrue(true)
             .build()
     );
-    listIndex++;
   }
 
   private boolean isLastQuestion() {
-    return currentIndex == questionList.size() - 1;
+    return currentIndex == questions.size() - 1;
   }
 
   private boolean isFirstQuestion() {
     return currentIndex == 0;
   }
 
-  private void showToast(@NonNull int msg){
+  private void showToast(@NonNull int msg) {
     Toast.makeText(QuizActivity.this, msg, Toast.LENGTH_SHORT).show();
   }
 }
