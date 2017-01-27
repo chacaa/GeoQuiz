@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +25,8 @@ import java.util.List;
 public class QuizActivity extends AppCompatActivity {
   private Button falseButton;
   private Button trueButon;
-  private Button nextButton;
-  private Button prevButton;
+  private ImageButton nextButton;
+  private ImageButton prevButton;
   private TextView questionTextView;
   @NonNull
   private List<Question> questionList = new ArrayList<>();
@@ -82,7 +83,7 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupPrevButton() {
-    prevButton = (Button) findViewById(R.id.prev_button);
+    prevButton = (ImageButton) findViewById(R.id.prev_button);
     prevButton.setEnabled(false);
     prevButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -98,7 +99,7 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupNextButton() {
-    nextButton = (Button) findViewById(R.id.next_button);
+    nextButton = (ImageButton) findViewById(R.id.next_button);
     nextButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
