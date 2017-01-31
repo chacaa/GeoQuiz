@@ -1,5 +1,7 @@
 package com.xmartlabs.scasas.geoquiz.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -13,11 +15,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xmartlabs.scasas.geoquiz.CheatActivity;
 import com.xmartlabs.scasas.geoquiz.R;
 import com.xmartlabs.scasas.geoquiz.module.Question;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by scasas on 1/17/17
@@ -26,14 +28,19 @@ import java.util.List;
 public class QuizActivity extends AppCompatActivity {
   private static final String TAG = "QuizActivity";
   private static final String KEY_INDEX = "index";
+  private static final String KEY_CHEATER = "cheater";
+  private static final String KEY_LIST = "list";
+  private static final int REQUEST_CODE_CHEAT = 0;
   private Button falseButton;
-  private Button trueButon;
+  private Button trueButton;
+  private Button cheatButton;
   private ImageButton nextButton;
   private ImageButton prevButton;
   private TextView questionTextView;
   @NonNull
-  private List<Question> questions = new ArrayList<>();
+  private ArrayList<Question> questions = new ArrayList<>();
   private int currentIndex = 0;
+  private boolean isCheater;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,11 @@ public class QuizActivity extends AppCompatActivity {
     setContentView(R.layout.activity_quiz);
     if (savedInstanceState != null) {
       currentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+      isCheater = savedInstanceState.getBoolean(KEY_CHEATER, false);
+      questions = (ArrayList<Question>) savedInstanceState.getSerializable(KEY_LIST);
+    }
+    if (questions.isEmpty()) {
+      setupQuestions();
     }
     setupQuizButton();
     setupQuestionText();
@@ -50,6 +62,28 @@ public class QuizActivity extends AppCompatActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.quiz, menu);
     return true;
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (resultCode != Activity.RESULT_OK) {
+      return;
+    }
+    if (requestCode == REQUEST_CODE_CHEAT) {
+      if (data == null) {
+        return;
+      }
+      isCheater = CheatActivity.wasAnswerShown(data);
+    }
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle savedInstanceState) {
+    super.onSaveInstanceState(savedInstanceState);
+    Log.i(TAG, "onSaveInstance");
+    savedInstanceState.putInt(KEY_INDEX, currentIndex);
+    savedInstanceState.putBoolean(KEY_CHEATER, isCheater);
+    savedInstanceState.putSerializable("list", questions);
   }
 
   @Override
@@ -63,12 +97,33 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupQuizButton() {
-    setupQuestions();
     setupTrueButton();
     setupFalseButton();
+    setupCheatButton();
     setupNextButton();
     setupPrevButton();
     setupClickableTextView();
+  }
+
+  private void startCheatActivity() {
+    Intent intent = CheatActivity.newIntent(QuizActivity.this, getCurrentQuestionValue());
+    startActivityForResult(intent, REQUEST_CODE_CHEAT);
+  }
+
+  private void setupCheatButton() {
+    cheatButton = (Button) findViewById(R.id.cheat_button);
+    cheatButton.setOnClickListener(
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            startCheatActivity();
+          }
+        }
+    );
+  }
+
+  private boolean getCurrentQuestionValue() {
+    return questions.get(currentIndex).isAnswerTrue();
   }
 
   private void setupClickableTextView() {
@@ -97,6 +152,7 @@ public class QuizActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         if (!isFirstQuestion()) {
+          decideIfTheUserCheated();
           currentIndex--;
           questionTextView.setText(questions.get(currentIndex).getTextResId());
           nextButton.setEnabled(!isLastQuestion());
@@ -112,6 +168,7 @@ public class QuizActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         if (!isLastQuestion()) {
+          decideIfTheUserCheated();
           currentIndex++;
           questionTextView.setText(questions.get(currentIndex).getTextResId());
           prevButton.setEnabled(!isFirstQuestion());
@@ -132,11 +189,11 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupTrueButton() {
-    trueButon = (Button) findViewById(R.id.true_button);
-    trueButon.setOnClickListener(new View.OnClickListener() {
+    trueButton = (Button) findViewById(R.id.true_button);
+    trueButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        showToast(obtainAnswerValue(trueButon.getText().toString()));
+        showToast(obtainAnswerValue(trueButton.getText().toString()));
       }
     });
   }
@@ -149,6 +206,12 @@ public class QuizActivity extends AppCompatActivity {
 
   @StringRes
   private int obtainAnswerValue(@NonNull String valueButton) {
+    decideIfTheUserCheated();
+    if (questions.get(currentIndex).isCheater()) {
+      return valueButton.toLowerCase().equals(String.valueOf(questions.get(currentIndex).isAnswerTrue()))
+          ? R.string.judgment_toast
+          : R.string.dumbest_person;
+    }
     return valueButton.toLowerCase().equals(String.valueOf(questions.get(currentIndex).isAnswerTrue()))
         ? R.string.correct_toast
         : R.string.incorrect_toast;
@@ -199,10 +262,10 @@ public class QuizActivity extends AppCompatActivity {
     Toast.makeText(QuizActivity.this, msg, Toast.LENGTH_SHORT).show();
   }
 
-  @Override
-  public void onSaveInstanceState(Bundle savedInstanceState) {
-    super.onSaveInstanceState(savedInstanceState);
-    Log.i(TAG, "onSaveInstance");
-    savedInstanceState.putInt(KEY_INDEX, currentIndex);
+  private void decideIfTheUserCheated() {
+    if (isCheater) {
+      isCheater = false;
+      questions.get(currentIndex).setCheated(true);
+    }
   }
 }

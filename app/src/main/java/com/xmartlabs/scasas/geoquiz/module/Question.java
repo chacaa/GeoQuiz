@@ -2,17 +2,28 @@ package com.xmartlabs.scasas.geoquiz.module;
 
 import android.support.annotation.StringRes;
 
+import java.io.Serializable;
+
 /**
  * Created by scasas on 1/25/17.
  */
-public class Question {
+public class Question implements Serializable{
   @StringRes
   private int textResId;
   private boolean answerTrue;
+  private boolean cheated;
 
   @StringRes
   public int getTextResId() {
     return textResId;
+  }
+
+  public boolean isCheater() {
+    return cheated;
+  }
+
+  public void setCheated(boolean cheated) {
+    this.cheated = cheated;
   }
 
   public boolean isAnswerTrue() {
