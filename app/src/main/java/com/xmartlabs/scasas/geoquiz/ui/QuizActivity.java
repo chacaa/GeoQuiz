@@ -48,7 +48,7 @@ public class QuizActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Fabric.with(this, new Crashlytics());
+    initializeFabric();
     setContentView(R.layout.activity_quiz);
     bindViews();
     if (savedInstanceState != null) {
@@ -274,5 +274,9 @@ public class QuizActivity extends AppCompatActivity {
     prevButton = (ImageButton) findViewById(R.id.prev_button);
     questionTextView = (TextView) findViewById(R.id.question);
     trueButton = (Button) findViewById(R.id.true_button);
+  }
+
+  private void initializeFabric() {
+    Fabric.with(this, new Crashlytics());
   }
 }
