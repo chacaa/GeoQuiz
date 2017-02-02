@@ -7,7 +7,8 @@ import java.io.Serializable;
 /**
  * Created by scasas on 1/25/17.
  */
-public class Question implements Serializable{
+
+public class Question implements Serializable {
   @StringRes
   private int textResId;
   private boolean answerTrue;

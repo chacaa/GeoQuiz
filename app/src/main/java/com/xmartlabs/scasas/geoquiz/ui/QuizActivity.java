@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,31 +20,36 @@ import com.xmartlabs.scasas.geoquiz.module.Question;
 
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 /**
  * Created by scasas on 1/17/17
  */
 
 public class QuizActivity extends AppCompatActivity {
-  private static final String TAG = "QuizActivity";
-  private static final String KEY_INDEX = "index";
   private static final String KEY_CHEATER = "cheater";
+  private static final String KEY_INDEX = "index";
   private static final String KEY_LIST = "list";
   private static final int REQUEST_CODE_CHEAT = 0;
-  private Button falseButton;
-  private Button trueButton;
+  private static final String TAG = "QuizActivity";
+
   private Button cheatButton;
+  private Button falseButton;
   private ImageButton nextButton;
   private ImageButton prevButton;
   private TextView questionTextView;
-  @NonNull
-  private ArrayList<Question> questions = new ArrayList<>();
+  private Button trueButton;
+
   private int currentIndex = 0;
   private boolean isCheater;
+  @NonNull
+  private ArrayList<Question> questions = new ArrayList<>();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_quiz);
+    bindView();
     if (savedInstanceState != null) {
       currentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
       isCheater = savedInstanceState.getBoolean(KEY_CHEATER, false);
@@ -80,7 +84,7 @@ public class QuizActivity extends AppCompatActivity {
   @Override
   public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
-    Log.i(TAG, "onSaveInstance");
+    Timber.i(TAG, "onSaveInstance");
     savedInstanceState.putInt(KEY_INDEX, currentIndex);
     savedInstanceState.putBoolean(KEY_CHEATER, isCheater);
     savedInstanceState.putSerializable("list", questions);
@@ -111,7 +115,6 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupCheatButton() {
-    cheatButton = (Button) findViewById(R.id.cheat_button);
     cheatButton.setOnClickListener(
         new View.OnClickListener() {
           @Override
@@ -127,7 +130,6 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupClickableTextView() {
-    questionTextView = (TextView) findViewById(R.id.question);
     questionTextView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -144,7 +146,6 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupPrevButton() {
-    prevButton = (ImageButton) findViewById(R.id.prev_button);
     if (isFirstQuestion()) {
       prevButton.setEnabled(false);
     }
@@ -163,7 +164,6 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupNextButton() {
-    nextButton = (ImageButton) findViewById(R.id.next_button);
     nextButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -179,7 +179,6 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupFalseButton() {
-    falseButton = (Button) findViewById(R.id.false_button);
     falseButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -189,7 +188,6 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupTrueButton() {
-    trueButton = (Button) findViewById(R.id.true_button);
     trueButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -199,7 +197,6 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void setupQuestionText() {
-    questionTextView = (TextView) findViewById(R.id.question);
     int question = questions.get(currentIndex).getTextResId();
     questionTextView.setText(question);
   }
@@ -208,11 +205,11 @@ public class QuizActivity extends AppCompatActivity {
   private int obtainAnswerValue(@NonNull String valueButton) {
     decideIfTheUserCheated();
     if (questions.get(currentIndex).isCheater()) {
-      return valueButton.toLowerCase().equals(String.valueOf(questions.get(currentIndex).isAnswerTrue()))
+      return valueButton.equalsIgnoreCase(String.valueOf(questions.get(currentIndex).isAnswerTrue()))
           ? R.string.judgment_toast
           : R.string.dumbest_person;
     }
-    return valueButton.toLowerCase().equals(String.valueOf(questions.get(currentIndex).isAnswerTrue()))
+    return valueButton.equalsIgnoreCase(String.valueOf(questions.get(currentIndex).isAnswerTrue()))
         ? R.string.correct_toast
         : R.string.incorrect_toast;
   }
@@ -267,5 +264,14 @@ public class QuizActivity extends AppCompatActivity {
       isCheater = false;
       questions.get(currentIndex).setCheated(true);
     }
+  }
+
+  private void bindView() {
+    cheatButton = (Button) findViewById(R.id.cheat_button);
+    falseButton = (Button) findViewById(R.id.false_button);
+    nextButton = (ImageButton) findViewById(R.id.next_button);
+    prevButton = (ImageButton) findViewById(R.id.prev_button);
+    questionTextView = (TextView) findViewById(R.id.question);
+    trueButton = (Button) findViewById(R.id.true_button);
   }
 }
