@@ -14,12 +14,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.xmartlabs.scasas.geoquiz.CheatActivity;
 import com.xmartlabs.scasas.geoquiz.R;
 import com.xmartlabs.scasas.geoquiz.module.Question;
 
 import java.util.ArrayList;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
@@ -46,6 +48,7 @@ public class QuizActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Fabric.with(this, new Crashlytics());
     setContentView(R.layout.activity_quiz);
     bindViews();
     if (savedInstanceState != null) {
