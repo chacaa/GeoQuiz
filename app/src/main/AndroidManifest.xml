@@ -4,6 +4,8 @@
     package="com.xmartlabs.scasas.geoquiz"
     >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,6 +27,11 @@
         </activity>
 
         <activity android:name=".CheatActivity" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="fb54b0fcded49d3e82043de10c558d9ea0018076"
+            />
 
     </application>
 
