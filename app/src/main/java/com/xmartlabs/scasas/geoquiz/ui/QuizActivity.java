@@ -25,13 +25,11 @@ import timber.log.Timber;
 /**
  * Created by scasas on 1/17/17
  */
-
 public class QuizActivity extends AppCompatActivity {
   private static final String KEY_CHEATER = "cheater";
   private static final String KEY_INDEX = "index";
   private static final String KEY_LIST = "list";
   private static final int REQUEST_CODE_CHEAT = 0;
-  private static final String TAG = "QuizActivity";
 
   private Button cheatButton;
   private Button falseButton;
@@ -49,7 +47,7 @@ public class QuizActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_quiz);
-    bindView();
+    bindViews();
     if (savedInstanceState != null) {
       currentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
       isCheater = savedInstanceState.getBoolean(KEY_CHEATER, false);
@@ -84,7 +82,7 @@ public class QuizActivity extends AppCompatActivity {
   @Override
   public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
-    Timber.i(TAG, "onSaveInstance");
+    Timber.i("onSaveInstance");
     savedInstanceState.putInt(KEY_INDEX, currentIndex);
     savedInstanceState.putBoolean(KEY_CHEATER, isCheater);
     savedInstanceState.putSerializable("list", questions);
@@ -266,7 +264,7 @@ public class QuizActivity extends AppCompatActivity {
     }
   }
 
-  private void bindView() {
+  private void bindViews() {
     cheatButton = (Button) findViewById(R.id.cheat_button);
     falseButton = (Button) findViewById(R.id.false_button);
     nextButton = (ImageButton) findViewById(R.id.next_button);

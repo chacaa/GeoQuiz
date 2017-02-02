@@ -18,7 +18,6 @@ public class CheatActivity extends AppCompatActivity {
   private static final String EXTRA_ANSWER_IS_TRUE = CheatActivity.class.getCanonicalName() + ".answer_is_true";
   private static final String EXTRA_ANSWER_SHOWN = CheatActivity.class.getCanonicalName() + ".answer_shown";
   private static final String EXTRA_IS_CHEATER = "is_cheater";
-  private static final String TAG = "CheatActivity";
 
   private TextView answerTextView;
   private Button showAnswer;
@@ -30,7 +29,7 @@ public class CheatActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_cheat);
-    bindView();
+    bindViews();
     answerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
     setupShowAnswerButton();
     if (savedInstanceState != null) {
@@ -44,7 +43,7 @@ public class CheatActivity extends AppCompatActivity {
   @Override
   public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
-    Timber.i(TAG, "onSaveInstance");
+    Timber.i("onSaveInstance");
     savedInstanceState.putBoolean(EXTRA_IS_CHEATER, isCheater);
   }
 
@@ -63,8 +62,8 @@ public class CheatActivity extends AppCompatActivity {
           int midWidth = showAnswer.getWidth() / 2;
           int midHeight = showAnswer.getHeight() / 2;
           float radius = showAnswer.getWidth();
-          Animator anim = ViewAnimationUtils.createCircularReveal(showAnswer, midWidth, midHeight, radius, 0);
-          anim.addListener(new AnimatorListenerAdapter() {
+          Animator animator = ViewAnimationUtils.createCircularReveal(showAnswer, midWidth, midHeight, radius, 0);
+          animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
               super.onAnimationEnd(animation);
@@ -73,7 +72,7 @@ public class CheatActivity extends AppCompatActivity {
               showAnswer.setVisibility(View.INVISIBLE);
             }
           });
-          anim.start();
+          animator.start();
         } else {
           showAnswerInTextView();
           showAnswer.setEnabled(false);
@@ -97,7 +96,7 @@ public class CheatActivity extends AppCompatActivity {
     return result.getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
   }
 
-  private void bindView() {
+  private void bindViews() {
     answerTextView = (TextView) findViewById(R.id.answer_text_view);
     showAnswer = (Button) findViewById(R.id.show_answer_button);
   }
